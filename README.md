@@ -70,3 +70,5 @@ To ensure a safe and uniform development environment, we recommend using a virtu
 
 ## Lecture Notes
 [Lecture notes](unofficialLectureNotes/sysprog_notes.org) under ```unofficialLectureNotes``` are provided by [Denis Davidoglu](https://github.com/dawidogg).
+
+Lecture materials for the System Programming course as taught at Istanbul Technical University can be accessed under [this link](https://ninova.itu.edu.tr/tr/dersler/bilgisayar-bilisim-fakultesi/144/blg-413e/). These materials can provide further insights and complement what we cover in our workshop. Please note that this workshop is not 100% aligned with the mentioned course, the link is provided as an additional resource.
