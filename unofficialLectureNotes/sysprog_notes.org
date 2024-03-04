@@ -1,4 +1,3 @@
-#+title: Systems Programming - Unofficial Notes
 #+author: Denis Davidoglu
 
 * Systems Programming - Unofficial Notes
