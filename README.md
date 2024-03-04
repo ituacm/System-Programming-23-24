@@ -69,4 +69,4 @@ To ensure a safe and uniform development environment, we recommend using a virtu
    - Once Ubuntu is installed, install the VirtualBox Guest Additions for improved integration between the host system and the virtual machine (e.g., better screen resolution, shared clipboard, shared folders, drag and drop option, etc.).
 
 ## Lecture Notes
-Lecture notes under ```unofficialLectureNotes``` are provided by [Denis Davidoglu](https://github.com/dawidogg).
+[Lecture notes](unofficialLectureNotes/sysprog_notes.org) under ```unofficialLectureNotes``` are provided by [Denis Davidoglu](https://github.com/dawidogg).
