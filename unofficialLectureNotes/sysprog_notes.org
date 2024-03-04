@@ -1,0 +1,43 @@
+#+title: Systems Programming - Unofficial Notes
+#+author: Denis Davidoglu
+
+* Systems Programming - Unofficial Notes
+** Disclaimer
+Hi, I'm Denis, and here I post notes that I am taking in the class. These do not necessarily reflect the lecturer's exact words; in fact, they are deliberately distorted with my biased ideas. Whoever let me cook, made a huge mistake.
+
+** Outline
+| Order | Project            | Approach       |
+|-------+--------------------+----------------|
+|     1 | Device driver I/O  | Kernel module  |
+|     2 | File system (FUSE) | User-space     |
+|     3 | Process management | Kernel compile |
+
+** Week 1
+- Kernel cannot depend on any external libraries
+- Turgut Uyar's system: Debian lxqt
+- Dealing with the concept of system call. Specials functions with switch from user space to kernel space.
+- Requirements: C compiler, Emacs, and GNU/Linux operating system
+- Use virtual machine in order to not brick your computer
+- Oracle VM: https://www.virtualbox.org/
+- Long Term Support (LTS) versions are the most stable
+- Linux, Ubuntu 22.04 LTS (Jammy Jellyfish), English version
+- Minimal system: 4 GB RAM, 1 core CPU, disk size 40 GB
+- In the last project, we will compile Linux kernel, there should be enough storage
+- Minimal installation, without office software, games and other crapware
+- Good messaging apps: Signal, Matrix, personal email server
+- Apple - devil
+- [[https://youtu.be/vhk_CkUtkhE?si=gZtEuSDJAK9fqh6J][Get new phone - A Greentext Story]]
+- stay off grid 󰋂
+- Install virtualbox extensions for shared folders, clipboard, higher window size and resolution
+  On the virtual machine
+  #+begin_quote sh
+  sudo ./VBoxLinuxAdditions.run
+  #+end_quote
+- vboxusers: Add users to special group for interaction with the virtual box
+- If host is Windows and VM is Linux, there may be conflicts between NTFS and ext4 file systems. Use only for copying files, not for compilation.
+- Linus Torvalds
+  #+begin_quote
+  Software is like sex: it's better when it's free.
+  #+end_quote
+- System Programming slides on Ninova for extra information
+- Not many tutorials on device driver and process management, because the standards change. RTFM.
