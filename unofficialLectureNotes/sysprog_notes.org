@@ -13,7 +13,7 @@ Hi, I'm Denis, and here I post notes that I am taking in the class. These do not
 
 ** Week 1
 - Kernel cannot depend on any external libraries
-- Turgut Uyar's system: Debian lxqt
+- Turgut Uyar's system: Lubuntu
 - Dealing with the concept of system call. Specials functions with switch from user space to kernel space.
 - Requirements: C compiler, Emacs, and GNU/Linux operating system
 - Use virtual machine in order to not brick your computer
