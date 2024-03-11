@@ -43,11 +43,11 @@ Hi, I'm Denis, and here I post notes that I am taking in the class. These do not
 ** Week 2 - Kernel Modules
 - Some details about rookie virtualbox, shared folder
 - Commands on fresh installation
-  #+begin_src sh
-  sudo apt update
-  sudo apt upgrade
-  sudo apt install build-essential gcc-12
-  #+end_src
+#+begin_src sh
+sudo apt update
+sudo apt upgrade
+sudo apt install build-essential gcc-12
+#+end_src
 - You have to use the same compiler, the same version when compiling modules of a kernel
 - When working with kernel modules, there is still risk of crashing the system
 - Hello world module
@@ -55,26 +55,26 @@ Hi, I'm Denis, and here I post notes that I am taking in the class. These do not
   + Reason of writing *static* is to prevent exporting variables or functions, thus polluting global space. Like private.
   + *printk* - print kernel, configurable print function
   + *Makefile*, tell the system how to compile the module
-  + *ll* - list directory contents with detailed information
-  + *lsmod* - list modules
-  + */proc* - not an actual directory, current state of the kernel, can be viewed with *ls*
-  + */proc/modules* -  shows nearly the same information as *lsmod*
+  + ~ll~ - list directory contents with detailed information
+  + ~lsmod~ - list modules
+  + */proc* - not an actual directory, current state of the kernel, can be viewed with ~ls~
+  + */proc/modules* -  shows nearly the same information as ~lsmod~
   + modules are located at /lib/modules
-  + *uname -a*: all information about kernel
-  + *uname -r*: show kernel revision number
+  + ~uname -a~: all information about kernel
+  + ~uname -r~: show kernel revision number
   + Never ignore compile warning
     #+DOWNLOADED: screenshot @ 2024-03-11 20:26:35
     [[file:Systems_Programming_-_Unofficial_Notes/2024-03-11_20-26-35_screenshot.png]]
-  + *sudo insmod hello.ko* - insert module
+  + ~sudo insmod hello.ko~ - insert module
   + When kernel sees printk, it prints to system logs
-  + *sudo tail /var/log/kern.log* or *dmesg* - system logs
-  + *lsmod | grep hello* - pipeline output of lsmod to grep (choose lines that contain hello)
-  + *rmmod <name>* - unload module
+  + ~sudo tail /var/log/kern.log~ or ~dmesg~ - system logs
+  + ~lsmod | grep hello~ - pipeline output of lsmod to grep (choose lines that contain hello)
+  + ~rmmod <name>~ - unload module
   + Readable parameter, but cannot be changed: *module_param(variable, type, flag)*, flag S_IRUGO
-  + Parameters can be changed while calling *insmod*:
-  #+begin_src sh
-    sudo insmod hello.ko whom=Linus
-  #+end_src
+  + Parameters can be changed while calling ~insmod~:
+#+begin_src sh
+sudo insmod hello.ko whom=Linus
+#+end_src
 - Device Types
   + character, block, network
   + A character device is a stream of characters that is read and written. Ex: console, mouse, serial port, sound card. Data cannot be read randomly, only serially.
@@ -89,8 +89,8 @@ Hi, I'm Denis, and here I post notes that I am taking in the class. These do not
   + sda - +seventh day adventists+ SCSI (SKUZ-ee) Disk A
   + /dev/console - full screen console, /dev/tty - terminals, /dev/sda scsi disks, disks are emulated as scsi in modern Linux
   + /dev/sdb1 and /dev/sdb2 - first and second partitions
-  + *ll /dev/SD** - view scsi disks
-  + The first letter that comes after *ll* command at each row. c - character, - - regular file, l - link, d - directory.
+  + ~ll /dev/SD*~ - view scsi disks
+  + The first letter that comes after ~ll~ command at each row. ~c~ is character, ~-~ is regular file, ~l~ is link, ~d~ is directory.
   + major number x (driver), minor number y (actual device)
   + 256 of major number is a very small number for drivers.
   + Subsetting: Drivers can take intervals of major numbers and minor numbers.
@@ -102,6 +102,6 @@ Hi, I'm Denis, and here I post notes that I am taking in the class. These do not
   + alloc_chrdev_region(&devno, pseudo_minor, 1, "pseudo")
   + *register_chrdev_region* -> registering a specific address region. Much higher chance to fail.
   + On exitting give the numbers back: *unregister_chrdev_region()*
-  + *grep pseudo /proc/devices*: show major numbers of devices
+  + ~grep pseudo /proc/devices~: show major numbers of devices
 - Device driver interface - next week.
 - I/O will not be actually implemented; instead, it will be simulated using memory manipulations. Pseudo-device.
