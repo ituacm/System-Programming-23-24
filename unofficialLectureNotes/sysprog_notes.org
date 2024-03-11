@@ -50,19 +50,19 @@ sudo apt install build-essential gcc-12
 #+end_src
 - You have to use the same compiler, the same version when compiling modules of a kernel
 - When working with kernel modules, there is still risk of crashing the system
-- Hello world module
+- [[Code] Hello world module](../drivers/hello)
   + *<linux/module.h>* library
   + Reason of writing *static* is to prevent exporting variables or functions, thus polluting global space. Like private.
   + *printk* - print kernel, configurable print function
   + *Makefile*, tell the system how to compile the module
-  + ~ll~ - list directory contents with detailed information
+  + ~ls -l~ (sometimes aliased to ~ll~) - list directory contents with detailed information
   + ~lsmod~ - list modules
   + */proc* - not an actual directory, current state of the kernel, can be viewed with ~ls~
   + */proc/modules* -  shows nearly the same information as ~lsmod~
   + modules are located at /lib/modules
   + ~uname -a~: all information about kernel
   + ~uname -r~: show kernel revision number
-  + Never ignore compile warning
+  + Never ignore compile warnings
     #+DOWNLOADED: screenshot @ 2024-03-11 20:26:35
     [[file:Systems_Programming_-_Unofficial_Notes/2024-03-11_20-26-35_screenshot.png]]
   + ~sudo insmod hello.ko~ - insert module
@@ -89,13 +89,13 @@ sudo insmod hello.ko whom=Linus
   + sda - +seventh day adventists+ SCSI (SKUZ-ee) Disk A
   + /dev/console - full screen console, /dev/tty - terminals, /dev/sda scsi disks, disks are emulated as scsi in modern Linux
   + /dev/sdb1 and /dev/sdb2 - first and second partitions
-  + ~ll /dev/SD*~ - view scsi disks
-  + The first letter that comes after ~ll~ command at each row. ~c~ is character, ~-~ is regular file, ~l~ is link, ~d~ is directory.
+  + ~ls -l /dev/SD*~ - view scsi disks
+  + The first letter that comes after ~ls -l~ command at each row. ~c~ is character, ~-~ is regular file, ~l~ is link, ~d~ is directory.
   + major number x (driver), minor number y (actual device)
   + 256 of major number is a very small number for drivers.
   + Subsetting: Drivers can take intervals of major numbers and minor numbers.
-  make clean - delete all intermediate files created after build
-- Registering major and minor numbers
+- make clean - delete all intermediate files created after build
+- [[Code] Registering major and minor numbers](../drivers/pseudo)
   + *<linux/fs.h>* - number allocation and other
   + major number 0 -> give any major number. Otherwise, give the specified number (not a good idea).
   + alloc_chrdev_region(<address of data structure>, <starting of minor numbers>, <number of minor numbers>, <name>)
