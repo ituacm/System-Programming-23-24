@@ -50,7 +50,7 @@ sudo apt install build-essential gcc-12
 #+end_src
 - You have to use the same compiler, the same version when compiling modules of a kernel
 - When working with kernel modules, there is still risk of crashing the system
-- [[Code] Hello world module](../drivers/hello)
+- [[../drivers/hello][Hello world module]]
   + *<linux/module.h>* library
   + Reason of writing *static* is to prevent exporting variables or functions, thus polluting global space. Like private.
   + *printk* - print kernel, configurable print function
@@ -95,7 +95,7 @@ sudo insmod hello.ko whom=Linus
   + 256 of major number is a very small number for drivers.
   + Subsetting: Drivers can take intervals of major numbers and minor numbers.
 - make clean - delete all intermediate files created after build
-- [[Code] Registering major and minor numbers](../drivers/pseudo)
+- [[../drivers/pseudo][Registering major and minor numbers]]
   + *<linux/fs.h>* - number allocation and other
   + major number 0 -> give any major number. Otherwise, give the specified number (not a good idea).
   + alloc_chrdev_region(<address of data structure>, <starting of minor numbers>, <number of minor numbers>, <name>)
