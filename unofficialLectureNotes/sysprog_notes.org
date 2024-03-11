@@ -11,7 +11,7 @@ Hi, I'm Denis, and here I post notes that I am taking in the class. These do not
 |     2 | File system (FUSE) | User-space     |
 |     3 | Process management | Kernel compile |
 
-** Week 1
+** Week 1 - Introduction and VM installation
 - Kernel cannot depend on any external libraries
 - Turgut Uyar's system: Lubuntu
 - Dealing with the concept of system call. Specials functions with switch from user space to kernel space.
@@ -34,9 +34,74 @@ Hi, I'm Denis, and here I post notes that I am taking in the class. These do not
   #+end_quote
 - vboxusers: Add users to special group for interaction with the virtual box
 - If host is Windows and VM is Linux, there may be conflicts between NTFS and ext4 file systems. Use only for copying files, not for compilation.
-- Linus Torvalds
+- Linus Torvalds on Oracle VirtualBox functioning worse than its open source version
   #+begin_quote
   Software is like sex: it's better when it's free.
   #+end_quote
-- System Programming slides on Ninova for extra information
+- System Programming slides on Ni nova for extra information
 - Not many tutorials on device driver and process management, because the standards change. RTFM.
+** Week 2 - Kernel Modules
+- Some details about rookie virtualbox, shared folder
+- Commands on fresh installation
+  #+begin_src sh
+  sudo apt update
+  sudo apt upgrade
+  sudo apt install build-essential gcc-12
+  #+end_src
+- You have to use the same compiler, the same version when compiling modules of a kernel
+- When working with kernel modules, there is still risk of crashing the system
+- Hello world module
+  + *<linux/module.h>* library
+  + Reason of writing *static* is to prevent exporting variables or functions, thus polluting global space. Like private.
+  + *printk* - print kernel, configurable print function
+  + *Makefile*, tell the system how to compile the module
+  + *ll* - list directory contents with detailed information
+  + *lsmod* - list modules
+  + */proc* - not an actual directory, current state of the kernel, can be viewed with *ls*
+  + */proc/modules* -  shows nearly the same information as *lsmod*
+  + modules are located at /lib/modules
+  + *uname -a*: all information about kernel
+  + *uname -r*: show kernel revision number
+  + Never ignore compile warning
+    #+DOWNLOADED: screenshot @ 2024-03-11 20:26:35
+    [[file:Systems_Programming_-_Unofficial_Notes/2024-03-11_20-26-35_screenshot.png]]
+  + *sudo insmod hello.ko* - insert module
+  + When kernel sees printk, it prints to system logs
+  + *sudo tail /var/log/kern.log* or *dmesg* - system logs
+  + *lsmod | grep hello* - pipeline output of lsmod to grep (choose lines that contain hello)
+  + *rmmod <name>* - unload module
+  + Readable parameter, but cannot be changed: *module_param(variable, type, flag)*, flag S_IRUGO
+  + Parameters can be changed while calling *insmod*:
+  #+begin_src sh
+    sudo insmod hello.ko whom=Linus
+  #+end_src
+- Device Types
+  + character, block, network
+  + A character device is a stream of characters that is read and written. Ex: console, mouse, serial port, sound card. Data cannot be read randomly, only serially.
+  + Block device, data transfers are transferred in fixed-sized blocks. Every block is addressable and there is no need for moving the pointer. More complicated.
+- Operating systems programming
+  + Interrupt driven coding is better for CPU, but harder
+  + Blocking is better for user-space programs, easier
+  + Operating systems make interrupt look like synchronous
+  + Posix interface
+  + The problem of operating systems is to receive a function request, find it on the system and execute
+- /dev
+  + sda - +seventh day adventists+ SCSI (SKUZ-ee) Disk A
+  + /dev/console - full screen console, /dev/tty - terminals, /dev/sda scsi disks, disks are emulated as scsi in modern Linux
+  + /dev/sdb1 and /dev/sdb2 - first and second partitions
+  + *ll /dev/SD** - view scsi disks
+  + The first letter that comes after *ll* command at each row. c - character, - - regular file, l - link, d - directory.
+  + major number x (driver), minor number y (actual device)
+  + 256 of major number is a very small number for drivers.
+  + Subsetting: Drivers can take intervals of major numbers and minor numbers.
+  make clean - delete all intermediate files created after build
+- Registering major and minor numbers
+  + *<linux/fs.h>* - number allocation and other
+  + major number 0 -> give any major number. Otherwise, give the specified number (not a good idea).
+  + alloc_chrdev_region(<address of data structure>, <starting of minor numbers>, <number of minor numbers>, <name>)
+  + alloc_chrdev_region(&devno, pseudo_minor, 1, "pseudo")
+  + *register_chrdev_region* -> registering a specific address region. Much higher chance to fail.
+  + On exitting give the numbers back: *unregister_chrdev_region()*
+  + *grep pseudo /proc/devices*: show major numbers of devices
+- Device driver interface - next week.
+- I/O will not be actually implemented; instead, it will be simulated using memory manipulations. Pseudo-device.
