@@ -10,7 +10,7 @@ module_param(howmany, int, S_IRUGO);
 module_param(whom, charp, S_IRUGO);
 
 static int hello_init(void) {
-    int i;
+    int i = 0;
     for (i = 0; i < howmany; i++) {
         printk(KERN_INFO "(%d) Hello, %s\n", i + 1, whom);
     }

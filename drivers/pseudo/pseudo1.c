@@ -14,15 +14,13 @@ static int pseudo_init(void) {
     if (pseudo_major == 0) {
         result = alloc_chrdev_region(&devno, pseudo_minor, 1, "pseudo");
         pseudo_major = MAJOR(devno);
-    /* } else {
+    } else {
         devno = MKDEV(pseudo_major, pseudo_minor);
-        result = register_chrdev_region(devno, 1, "pseudo"); */
+        result = register_chrdev_region(devno, 1, "pseudo");
     }
     if (result < 0) {
         printk(KERN_WARNING "pseudo: can't get major %d\n", pseudo_major);
         return result;
-    } else {
-        printk(KERN_DEBUG "pseudo: major number %d\n", pseudo_major);
     }
     return 0;
 }
