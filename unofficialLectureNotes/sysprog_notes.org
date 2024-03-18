@@ -105,3 +105,84 @@ sudo insmod hello.ko whom=Linus
   + ~grep pseudo /proc/devices~: show major numbers of devices
 - Device driver interface - next week.
 - I/O will not be actually implemented; instead, it will be simulated using memory manipulations. Pseudo-device.
+** Week 3 - Device Driver
+- Device drivers are interacted with using *open*, *close*, *read* and *write*, functions known as system calls
+- For anything that is nor input nor output, *ioctl* is used. Example: configuration of peripherals in embedded systems.
+- Do not confuse *open*, *close* (system calls) with *fopen*, *fclose* (call system calls)
+  #+begin_src C
+    int open(const char *path, int oflag, ...);
+    int close(int fd);
+  #+end_src
+- *read*
+  + fd - file descriptor
+  + return value - x
+  + x = nbyte: successful completion
+  + x = 0: end-of-file
+  + x < 0: error
+  + 0 < x < count: partial transfer. Not a problem, this is a normal operation. Repeat the request for needed bytes.
+#+begin_src C
+  ssize_t read(int fd, void *buf, size_t nbyte);
+#+end_src
+- *ioctl*
+  + No standard number of arguments
+#+begin_src
+  int ioctl(int fd, unsigned long request, ...);
+#+end_src
+  + console_ioctl (maybe)
+
+
+- Normally we would use C functions instead of system calls. System calls are harder.
+- ~strace~ - list system calls involved in a program
+- pseudo.c - open
+  + Check if a driver can be opened: ~ls -l /dev/foo~. If driver does not exist, create a new node:
+   #+begin_src sh
+     sudo mknod /dev/pseudo c 240 0
+   #+end_src
+  + Create open and close system call implementations
+  + *pseudo_open*, *pseudo_release*. Fixed function signature, OS sends specific parameters that cannot be changed.
+  + *struct file_operations*: kernel data structure that links /open/, /release/, /owner/ etc. properties to our functions.
+  + *<linux/cdev.h>*
+  + *cdev_init()*
+  + ~cdev_add(&pseudo_cdev, devno(major and minor numbers), 1)~: function to add the event handling to kernel.
+  + *struct cdev*: kernel data structure
+  + *cdev_del()*: call when unloading the module
+  + Usage of *&* in C allows function to modify the variable
+  + We can see that the device is opened and closed in *dmesg*
+  + [[https://lwn.net/Kernel/LDD3/][Linux Device Drivers]] book provides example with multiple devices
+
+- pseudo.c - read
+  + Example of reading one byte from the device
+  + If you implement *read* and make a mistake, reading can crush the system.
+    [[./Systems_Programming_-_Unofficial_Notes/sad_mouse.jpeg]]
+  + If the function is not implemented, kernel uses a default handler, and the system won't crush.
+  + *pseudo_read* puts a fixed value buf[0] = 'A'. Add to *pseudo_fops*.
+  + semaphore ~up(&pseudo_sem)~. Prevent multiple programs from reading at the same time. Wait on the *down* operation.
+  + *sema_init*
+  + ~od octal dump -x (hexadecimal) -N /dev/pseudo~ - read 6 bytes from the pseudo-device. No need to write test functions.
+  + Free A machine, it always returns 1, just like the ~yes~ command
+- pseudo.c - monetizing A's
+  + *copy_to_user*, safer function to copy data
+  + *pseudo_data*, *pseudo_capacity*
+  + Give one character at a time
+  + Endianness is visible in ~od~
+- pseudo.c - give new data continuously
+  + *f_pos* should be updated to read next data portions
+  + ~od -v~ option
+    #+begin_quote
+    -v, --output-duplicates
+        do not use * to mark line suppression
+    #+end_quote
+  + ~cat /dev/pseudo~ - continuously read from the device
+  + Device accesses random data because there are no boundaries
+- pseudo.c - limiting *f_pos*
+  + return 0 to indicate end of file
+- Tasks (from easy to relatively easy)
+  1) make capacity a module parameter
+  2) circular read
+  3) write (not circular)
+  4) llseek
+  5) ioctl operation: SHIFT, +n to every byte in the buffer
+  6) automatically create node, without finding the major and minor numbers and calling *mknod* (hint: udev rules).
+  7) create an entry in /proc
+  8) create a git repository where each commit is one task
+
