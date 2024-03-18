@@ -68,6 +68,23 @@ To ensure a safe and uniform development environment, we recommend using a virtu
 5. **Install VirtualBox Guest Additions**
    - Once Ubuntu is installed, install the VirtualBox Guest Additions for improved integration between the host system and the virtual machine (e.g., better screen resolution, shared clipboard, shared folders, drag and drop option, etc.).
 
+## Assignments
+
+### Device Driver
+
+Continue with the "pseudo" device example from the presentation
+and implement the following tasks:
+
+- Make device capacity a module parameter.
+- Make reading from the device a circular operation; i.e. upon reaching the end of the device, continue from the beginning. Also, write a test program to test various cases.
+- Implement the write operation. This should not be circular and report "device full" when device end is reached. Also, write a test program to test various cases.
+- Imolement the seek operation. Also, write a test program to test various cases.
+- Implement an ioctl operation named "PSEUDO_INC" which takes an 8-bit, signed integer value as parameter and increases each byte in the device by that value. Also, write a test program to test various cases.
+- At the moment, the device node has to be created manually after inserting the module. Handle this automatically without the need for human intervention.
+- Add an entry the device under the `/proc` file system, like `/proc/pseudo`.This entry should report the device capacity.
+
+Implement each of these tasks as *one* separate commit and notify the instructor via Matrix or e-mail with a link to your repository.
+
 ## Lecture Notes
 [Lecture notes](unofficialLectureNotes/sysprog_notes.org) under ```unofficialLectureNotes``` are provided by [Denis Davidoglu](https://github.com/dawidogg).
 
