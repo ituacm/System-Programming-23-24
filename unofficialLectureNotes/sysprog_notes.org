@@ -124,20 +124,15 @@ int close(int fd);
   ssize_t read(int fd, void *buf, size_t nbyte);
 #+end_src
 - *ioctl*
+  + ~int ioctl(int fd, unsigned long request, ...);~
   + No standard number of arguments
-#+begin_src
-  int ioctl(int fd, unsigned long request, ...);
-#+end_src
   + [[https://manpages.ubuntu.com/manpages/xenial/man2/ioctl_list.2.html][ioctl_list]]
 
 
 - Normally we would use C functions instead of system calls. System calls are harder.
 - ~strace~ - list system calls involved in a program
 - [[../drivers/pseudo/pseudo2.c][pseudo2.c]] - open
-  + Check if a driver can be opened: ~ls -l /dev/foo~. If driver does not exist, create a new node:
-#+begin_src sh
-sudo mknod /dev/pseudo c 240 0
-#+end_src
+  + Check if a driver can be opened: ~ls -l /dev/foo~. If driver does not exist, create a new node: ~sudo mknod /dev/pseudo c 240 0~
   + Create open and close system call implementations
   + *pseudo_open*, *pseudo_release*. Fixed function signature, OS sends specific parameters that cannot be changed.
   + *struct file_operations*: kernel data structure that links /open/, /release/, /owner/ etc. properties to our functions.
@@ -157,7 +152,7 @@ sudo mknod /dev/pseudo c 240 0
   + If the function is not implemented, kernel uses a default handler, and the system won't crush.
   + *pseudo_read* puts a fixed value buf[0] = 'A'. Add to *pseudo_fops*.
   + semaphore *up(&pseudo_sem)*. Prevent multiple programs from reading at the same time. Wait on the *down* operation.
-  + *sema_init*
+  + *sema_init();*
   + ~od octal dump -x (hexadecimal) -N /dev/pseudo~ - read 6 bytes from the pseudo-device. No need to write test functions.
   + Free A machine, it always returns 1, just like the ~yes~ command
 - [[../drivers/pseudo/pseudo4.c][pseudo4.c]] - monetizing A's
