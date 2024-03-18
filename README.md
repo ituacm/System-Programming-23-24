@@ -4,7 +4,7 @@
 This workshop, offered by ITU ACM, is designed to introduce participants to the fundamentals of systems programming. Covering topics from device driver I/O to process management, the workshop aims to provide hands-on experience with kernel modules, file systems, and process management through a series of projects.
 
 ## Lecturer's Contacts
-- **Name:** Hayri Turgut Uyar
+- **Name:** H. Turgut Uyar
 - **Email:** uyar at itu.edu.tr
 - **Matrix/Element:** @uyar:matrix.org
 
@@ -81,7 +81,7 @@ and implement the following tasks:
 - Imolement the seek operation. Also, write a test program to test various cases.
 - Implement an ioctl operation named "PSEUDO_INC" which takes an 8-bit, signed integer value as parameter and increases each byte in the device by that value. Also, write a test program to test various cases.
 - At the moment, the device node has to be created manually after inserting the module. Handle this automatically without the need for human intervention.
-- Add an entry the device under the `/proc` file system, like `/proc/pseudo`.This entry should report the device capacity.
+- Add an entry for the device under the `/proc` file system, like `/proc/pseudo`.This entry should report the device capacity.
 
 Implement each of these tasks as *one* separate commit and notify the instructor via Matrix or e-mail with a link to your repository.
 
