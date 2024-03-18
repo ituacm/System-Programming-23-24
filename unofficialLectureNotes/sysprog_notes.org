@@ -95,7 +95,7 @@ sudo insmod hello.ko whom=Linus
   + 256 of major number is a very small number for drivers.
   + Subsetting: Drivers can take intervals of major numbers and minor numbers.
 - make clean - delete all intermediate files created after build
-- [[../drivers/pseudo][Registering major and minor numbers]]
+- [[../drivers/pseudo1.c][Registering major and minor numbers]]
   + *<linux/fs.h>* - number allocation and other
   + major number 0 -> give any major number. Otherwise, give the specified number (not a good idea).
   + alloc_chrdev_region(<address of data structure>, <starting of minor numbers>, <number of minor numbers>, <name>)
@@ -133,7 +133,7 @@ sudo insmod hello.ko whom=Linus
 
 - Normally we would use C functions instead of system calls. System calls are harder.
 - ~strace~ - list system calls involved in a program
-- pseudo.c - open
+- [[../drivers/pseudo/pseudo2.c][pseudo2.c]] - open
   + Check if a driver can be opened: ~ls -l /dev/foo~. If driver does not exist, create a new node:
    #+begin_src sh
      sudo mknod /dev/pseudo c 240 0
@@ -149,10 +149,10 @@ sudo insmod hello.ko whom=Linus
   + Usage of *&* in C allows function to modify the variable
   + We can see that the device is opened and closed in *dmesg*
   + [[https://lwn.net/Kernel/LDD3/][Linux Device Drivers]] book provides example with multiple devices
-
-- pseudo.c - read
+- [[../drivers/pseudo/pseudo3.c][pseudo3.c]] - read
   + Example of reading one byte from the device
-  + If you implement *read* and make a mistake, reading can crush the system.
+  + If you implement *read* and make a mistake, reading can crash the system.
+
     [[./Systems_Programming_-_Unofficial_Notes/sad_mouse.jpeg]]
   + If the function is not implemented, kernel uses a default handler, and the system won't crush.
   + *pseudo_read* puts a fixed value buf[0] = 'A'. Add to *pseudo_fops*.
@@ -160,12 +160,12 @@ sudo insmod hello.ko whom=Linus
   + *sema_init*
   + ~od octal dump -x (hexadecimal) -N /dev/pseudo~ - read 6 bytes from the pseudo-device. No need to write test functions.
   + Free A machine, it always returns 1, just like the ~yes~ command
-- pseudo.c - monetizing A's
-  + *copy_to_user*, safer function to copy data
-  + *pseudo_data*, *pseudo_capacity*
+- [[../drivers/pseudo/pseudo4.c][pseudo4.c]] - monetizing A's
   + Give one character at a time
+  + dummy data is created: *pseudo_data*, *pseudo_capacity*
+  + *copy_to_user*, safer function to copy data
   + Endianness is visible in ~od~
-- pseudo.c - give new data continuously
+- [[../drivers/pseudo/pseudo5.c][pseudo5.c]] - give new data continuously
   + *f_pos* should be updated to read next data portions
   + ~od -v~ option
     #+begin_quote
@@ -174,7 +174,7 @@ sudo insmod hello.ko whom=Linus
     #+end_quote
   + ~cat /dev/pseudo~ - continuously read from the device
   + Device accesses random data because there are no boundaries
-- pseudo.c - limiting *f_pos*
+- [[../drivers/pseudo/pseudo6.c][pseudo6.c]] - limiting *f_pos*
   + return 0 to indicate end of file
 - Tasks (from easy to relatively easy)
   1) make capacity a module parameter
