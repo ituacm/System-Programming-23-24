@@ -109,10 +109,10 @@ sudo insmod hello.ko whom=Linus
 - Device drivers are interacted with using *open*, *close*, *read* and *write*, functions known as system calls
 - For anything that is nor input nor output, *ioctl* is used. Example: configuration of peripherals in embedded systems.
 - Do not confuse *open*, *close* (system calls) with *fopen*, *fclose* (call system calls)
-  #+begin_src C
-    int open(const char *path, int oflag, ...);
-    int close(int fd);
-  #+end_src
+#+begin_src C
+int open(const char *path, int oflag, ...);
+int close(int fd);
+#+end_src
 - *read*
   + fd - file descriptor
   + return value - x
@@ -128,22 +128,22 @@ sudo insmod hello.ko whom=Linus
 #+begin_src
   int ioctl(int fd, unsigned long request, ...);
 #+end_src
-  + console_ioctl (maybe)
+  + [[https://manpages.ubuntu.com/manpages/xenial/man2/ioctl_list.2.html][ioctl_list]]
 
 
 - Normally we would use C functions instead of system calls. System calls are harder.
 - ~strace~ - list system calls involved in a program
 - [[../drivers/pseudo/pseudo2.c][pseudo2.c]] - open
   + Check if a driver can be opened: ~ls -l /dev/foo~. If driver does not exist, create a new node:
-   #+begin_src sh
-     sudo mknod /dev/pseudo c 240 0
-   #+end_src
+#+begin_src sh
+sudo mknod /dev/pseudo c 240 0
+#+end_src
   + Create open and close system call implementations
   + *pseudo_open*, *pseudo_release*. Fixed function signature, OS sends specific parameters that cannot be changed.
   + *struct file_operations*: kernel data structure that links /open/, /release/, /owner/ etc. properties to our functions.
   + *<linux/cdev.h>*
   + *cdev_init()*
-  + ~cdev_add(&pseudo_cdev, devno(major and minor numbers), 1)~: function to add the event handling to kernel.
+  + *cdev_add(&pseudo_cdev, devno(major and minor numbers), 1)*: function to add the event handling to kernel.
   + *struct cdev*: kernel data structure
   + *cdev_del()*: call when unloading the module
   + Usage of *&* in C allows function to modify the variable
@@ -156,7 +156,7 @@ sudo insmod hello.ko whom=Linus
     [[./Systems_Programming_-_Unofficial_Notes/sad_mouse.jpeg]]
   + If the function is not implemented, kernel uses a default handler, and the system won't crush.
   + *pseudo_read* puts a fixed value buf[0] = 'A'. Add to *pseudo_fops*.
-  + semaphore ~up(&pseudo_sem)~. Prevent multiple programs from reading at the same time. Wait on the *down* operation.
+  + semaphore *up(&pseudo_sem)*. Prevent multiple programs from reading at the same time. Wait on the *down* operation.
   + *sema_init*
   + ~od octal dump -x (hexadecimal) -N /dev/pseudo~ - read 6 bytes from the pseudo-device. No need to write test functions.
   + Free A machine, it always returns 1, just like the ~yes~ command
