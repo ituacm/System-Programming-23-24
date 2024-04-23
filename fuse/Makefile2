@@ -1,0 +1,14 @@
+CC=gcc
+CFLAGS=-D_FILE_OFFSET_BITS=64
+LDFLAGS=-lfuse -lcurl -lcjson
+
+TARGET=cats
+
+$(TARGET): $(TARGET).o
+	$(CC) $< $(LDFLAGS) -o $@
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) $< -o $@
+
+clean:
+	rm -f $(TARGET).o $(TARGET)
