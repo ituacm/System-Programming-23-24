@@ -1,5 +1,4 @@
 #+author: Denis Davidoglu
-
 * Systems Programming - Unofficial Notes
 ** Disclaimer
 Hi, I'm Denis, and here I post notes that I am taking in the class. These do not necessarily reflect the lecturer's exact words; in fact, they are deliberately distorted with my biased ideas. Whoever let me cook, made a huge mistake.
@@ -89,13 +88,13 @@ sudo insmod hello.ko whom=Linus
   + sda - +seventh day adventists+ SCSI (SKUZ-ee) Disk A
   + /dev/console - full screen console, /dev/tty - terminals, /dev/sda scsi disks, disks are emulated as scsi in modern Linux
   + /dev/sdb1 and /dev/sdb2 - first and second partitions
-  + ~ls -l /dev/SD*~ - view scsi disks
+  + ~ls -l /dev/sd*~ - view scsi disks
   + The first letter that comes after ~ls -l~ command at each row. ~c~ is character, ~-~ is regular file, ~l~ is link, ~d~ is directory.
   + major number x (driver), minor number y (actual device)
   + 256 of major number is a very small number for drivers.
   + Subsetting: Drivers can take intervals of major numbers and minor numbers.
 - make clean - delete all intermediate files created after build
-- [[../drivers/pseudo1.c][Registering major and minor numbers]]
+- [[../drivers/pseudo/pseudo1.c][Registering major and minor numbers]]
   + *<linux/fs.h>* - number allocation and other
   + major number 0 -> give any major number. Otherwise, give the specified number (not a good idea).
   + alloc_chrdev_region(<address of data structure>, <starting of minor numbers>, <number of minor numbers>, <name>)
@@ -153,7 +152,7 @@ int close(int fd);
   + *pseudo_read* puts a fixed value buf[0] = 'A'. Add to *pseudo_fops*.
   + semaphore *up(&pseudo_sem)*. Prevent multiple programs from reading at the same time. Wait on the *down* operation.
   + *sema_init();*
-  + ~od octal dump -x (hexadecimal) -N /dev/pseudo~ - read 6 bytes from the pseudo-device. No need to write test functions.
+  + ~od (octal dump) -x (hexadecimal) -N 6 /dev/pseudo~ - read 6 bytes from the pseudo-device. No need to write test functions.
   + Free A machine, it always returns 1, just like the ~yes~ command
 - [[../drivers/pseudo/pseudo4.c][pseudo4.c]] - monetizing A's
   + Give one character at a time
@@ -180,4 +179,69 @@ int close(int fd);
   6) automatically create node, without finding the major and minor numbers and calling *mknod* (hint: udev rules).
   7) create an entry in /proc
   8) create a git repository where each commit is one task
-
+** Week 4 - File system (FUSE)
+- Developing in user-space: safer than in kernel space, external libraries are available.
+- VFS - Virtual File System. Software layer in the kernel that provides the filesystem interface to userspace programs.
+- Mounting - associating directories with some storage device. We might change partitions as we traverse the file system without realizing.
+- *hello.c* - Creates one directory and one text file.
+  + ~D_FILE_OFFSET_BITS=64~ compiler option is related to architecture
+  + ~-lfuse~ option links with FUSE library (the library must be installed)
+  + *hello.c* creates a text file containg "Hello world", which actually does not exist.
+  + "/" location means the current mounting point, not the root mounting point.
+  + *filler* function advertises *.* *..* and *hello.txt*.
+  + *IFDIR* (directory) with 0755 (all permissions except write).
+  + *IFREG* (file) with 0444 (read permissions to everyone).
+  + (!) Numbers starting with 0 in C are octal.
+  + ~-ENOENT~ no such file or directory. ~EACCES~ permission denied.
+  + Run with ~./hello ~/SP24~
+  + ~-d~ flag debug flag for fuse_main.
+  + ~mount~, ~umount~ shell commands for listing mounted devices and unmounting.
+  + Unmount *~/SP24* after testing code.
+- */dev/null* - Says it has written but does not write anything.
+#+begin_src C
+ssize_t pseudo_write(fd, buf, count) {
+  return count;
+}
+#+end_src
+- See also WOM (Write-Only Memory)
+#+DOWNLOADED: screenshot @ 2024-04-23 12:51:28
+[[./Systems_Programming_-_Unofficial_Notes/2024-04-23_12-51-28_screenshot.png]]
+- */dev/full* - Says it is full.
+#+begin_src C
+ssize_t pseudo_write(fd, buf, count) {
+  return 0;
+}
+#+end_src
+- *cats?.c*
+  + https://catfact.ninja/ - api example. Goal: show api results as file entries.
+  + ~curl -s https://catfact.ninja/breeds~:
+#+begin_src js
+"data": [
+  {
+    "breed": "Abyssinian",
+    "country": "Ethiopia",
+    "origin": "Natural/Standard",
+    "coat": "Short",
+    "pattern": "Ticked"
+  },
+  {
+    "breed": "Aegean",
+    "country": "Greece",
+    "origin": "Natural/Standard",
+    "coat": "Semi-long",
+    "pattern": "Bi- or tri-colored"
+  },
+... 
+#+end_src
+  + Pipe to ~jq .~ to show pretty json and filter results. See man pages for JQ(1), "BASIC FILTERS".
+  + We can use *libcjson* and *libcurl*, because we are developing in user space.
+  + ~-lcurl~, ~-lcjson~ linker options
+  + Code using curl library is copied from official examples. [[https://curl.se/libcurl/c/example.html]]
+  + Trick in the C language. malloc(1) to initialize the pointer, then realloc. 
+  + realloc as curl data chunks are coming, which might happen several times.
+  + Cycle through all pages and fetch data. Ex: ~breed?page=3~
+  + Result: cat breeds are shown as empty files.
+- Assignment
+  + Implement a read function to display fetched API data inside the text files.
+  + Implement a write function with post API, to upload changes made in the text files back to the server.
+  + You can use FUSE with everything you can map to folders and files. https://catfact.ninja/ is just an example.
