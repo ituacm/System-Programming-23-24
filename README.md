@@ -14,17 +14,13 @@ Reach out to one of the responsible students or the lecturer, to join the group.
 
 ## Schedule
 
-| Date       | Day | Topics             | Location       |
-|------------|-----|--------------------|----------------|
-| 2024-03-04 | Mon | Introduction       | EEB 5101       |
-| 2024-03-11 | Mon |Device Driver - I/O | EEB 5101       |
-| 2024-03-18 | Mon |                    |                |
-| 2024-03-25 | Mon |                    |                |
-| 2024-04-01 | Mon |                    |                |
-| 2024-04-08 | Mon |                    |                |
-| 2024-04-15 | Mon |                    |                |
-| 2024-04-22 | Mon |                    |                |
-| 2024-04-29 | Mon |                    |                |
+| Date       | Day | Topics                  | Location |
+|------------|-----|-------------------------|----------|
+| 2024-03-04 | Mon | Introduction            | EEB 5101 |
+| 2024-03-11 | Mon | Device Driver - I/O     | EEB 5101 |
+| 2024-03-18 | Mon | Device Driver - I/O     | EEB 5101 |
+| 2024-04-22 | Mon | Filesystem in Userspace | EEB 5101 |
+| 2024-04-29 | Mon |                         |          |
 
 
 ## Location
